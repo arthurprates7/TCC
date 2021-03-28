@@ -1,33 +1,27 @@
-import React, {useEffect, useState,useRef} from 'react';
+import React from 'react';
 import {    
-        Alert,
-        AsyncStorage, 
-        FlatList,
         Image,  
         Text,    
         TouchableOpacity,  
-        SafeAreaView,    
         View,
-        Picker,
-    TextInput,Button } from 'react-native';
+       } from 'react-native';
 
-import * as Font from 'expo-font';
 import styles from './styles';
 
-import landingImg from '../../assets/icon.png';
-import DashBoard from '../../assets/book.png';
-import Estoque from '../../assets/voluntario.png';
+import landingImg from '../../assets/logo2.png';
+import DashBoard from '../../assets/user.png';
+import Estoque from '../../assets/exclamation.png';
 
 
 export default function Landingacervo( {navigation}){
 
     function home(){
-        navigation.navigate("Home");
+        navigation.navigate("Acervo");
     }
 
   
     function acervo(){
-       navigation.navigate("Acervo");
+       navigation.navigate("Home");
     }
 
 
@@ -48,7 +42,7 @@ export default function Landingacervo( {navigation}){
 
         >
             <Image style={styles.imgdashboard} source={DashBoard} />
-          <Text style={styles.buttonText}>Acervo de Livros</Text>
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -57,16 +51,20 @@ export default function Landingacervo( {navigation}){
         >
             <Image source={Estoque} style={styles.imgdashboard} />
 
-          <Text style={styles.buttonText}>Acesso Voluntários</Text>
+          <Text style={styles.buttonText}>Sobre o APP</Text>
         </TouchableOpacity>
 
         
       </View>
 
 
+
+      
+
+
       <Text style={styles.totalConnections}>
-        Desenvolvido por APTechs{'\n'}
-        Versão 1.4
+        Desenvolvido por Arthur Martins Prates{'\n'}
+        Versão 1.0
       </Text>
      
     </View>

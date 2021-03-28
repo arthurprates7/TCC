@@ -1,27 +1,19 @@
-import React, {useEffect, useState,useRef} from 'react';
+import React from 'react';
 import {    
-        Alert,
         AsyncStorage, 
-        FlatList,
         Image,  
         Text,    
         TouchableOpacity,  
-        SafeAreaView,    
         View,
-        Picker,ScrollView,
-        
-    TextInput,Button } from 'react-native';
+        ScrollView,    
+    } from 'react-native';
 
-import * as Font from 'expo-font';
 import styles from './styles';
 
-import landingImg from '../../assets/icon.png';
+import landingImg from '../../assets/logo2.png';
 import DashBoard from '../../assets/dashboard.png';
-import Estoque from '../../assets/book.png';
-import revista from '../../assets/kisspng-computer-icons-magazine-share-icon-clip-art-5b3bda4b5f5f68.8338598215306491633907.png';
-import Renovações from '../../assets/return.png';
-import Sair from '../../assets/registradora.png';
-import Visitantes from '../../assets/userblack.png';
+import Estoque from '../../assets/funnel-dollar-solid.png';
+import Sair from '../../assets/Minio_Devices_and_Hardware_Bold-90-512.png';
 
 
 export default function LandingVoluntario( {navigation}){
@@ -34,29 +26,11 @@ export default function LandingVoluntario( {navigation}){
        navigation.navigate("Estoque");
     }
 
-    function emprestimo(){
-      navigation.navigate("EmprestimoRevista");
-   }
+    function logout(){
+      AsyncStorage.clear();
+      navigation.navigate("LandingAcervo");
 
-   function renovacoes(){
-    navigation.navigate("Emprestimos");
- }
-
- function visitantes(){
-  navigation.navigate("Visitantes");
-}
-
-function sair(){
-  navigation.navigate("LandingFinanceiro");
-
-
-}
-
-function logout(){
-  AsyncStorage.clear();
-  navigation.navigate("LandingAcervo");
-
-}
+    }
 
   return (
 
@@ -66,7 +40,7 @@ function logout(){
         <Image source={landingImg} style={styles.banner} />
         <ScrollView>
       <Text style={styles.title}>
-        Seja Bem-Vindo, Voluntário !{'\n'}
+        Seja Bem-Vindo, Arthur !{'\n'}
         <Text style={styles.titleBold}>O que você deseja fazer?</Text>
       </Text>
 
@@ -86,71 +60,35 @@ function logout(){
         >
             <Image source={Estoque} style={styles.imgdashboard} />
 
-          <Text style={styles.buttonText}>Acervo de Livros</Text>
+          <Text style={styles.buttonText}>Controle Mensal</Text>
         </TouchableOpacity>
 
         
       </View>
 
-      <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.buttonPrimary]}
-          onPress={emprestimo}
-
-        >
-            <Image style={styles.imgdashboard} source={revista} />
-          <Text style={styles.buttonText}>Empréstimo de Revista</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.buttonSecondary]}
-          onPress={renovacoes}
-        >
-            <Image source={Renovações} style={styles.imgdashboard} />
-
-          <Text style={styles.buttonText}>Renovações/Devoluções</Text>
-        </TouchableOpacity>
-
-        
-      </View>
+    
 
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={[styles.button, styles.buttonPrimary]}
-          onPress={visitantes}
-
-        >
-            <Image style={styles.imgdashboard} source={Visitantes} />
-          <Text style={styles.buttonText}>Visitantes</Text>
-        </TouchableOpacity>
-
-        
+      
 
         <TouchableOpacity
           style={[styles.button, styles.buttonPrimary]}
-          onPress={sair}
+          onPress={logout}
 
         >
             <Image style={styles.imgdashboard} source={Sair} />
-          <Text style={styles.buttonText}>Financeiro</Text>
+          <Text style={styles.buttonText}>Sair do APP</Text>
         </TouchableOpacity>
 
         
       </View>
 
 
-     <TouchableOpacity
-     style={styles.sairbutton}
-     onPress={logout}
-     >
-      <Text style={styles.totalConnections2}>
-        Sair do APP
-      </Text>
-      </TouchableOpacity>
+    
 
       <Text style={styles.totalConnections}>
-        Desenvolvido por APTechs{'\n'}
-        Versão 1.4
+        Desenvolvido por Arthur Martins Prates{'\n'}
+        Versão 1.0
       </Text>
      </ScrollView>
     </View>

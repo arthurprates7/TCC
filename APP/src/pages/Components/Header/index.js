@@ -31,7 +31,7 @@ const Header = (props)=>{
             <Image style={styles.logomarca1} source={require('../../../assets/pngegg.png')} />
             </TouchableOpacity>
 
-            <Image style={styles.logomarca} source={require('../../../assets/icon.png')} />
+            <Image style={styles.logomarca} source={require('../../../assets/logo2.png')} />
             
 
         </View>

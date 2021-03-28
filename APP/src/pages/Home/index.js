@@ -1,19 +1,13 @@
 import React , {useState, useEffect, useRef} from 'react';
 import {
-
-    View, 
     KeyboardAvoidingView,
     Image,
     TextInput, 
-    TouchableHighlight,
     TouchableOpacity, 
-    Keyboard,
     Alert ,
     AsyncStorage ,
     Text,
     StyleSheet, 
-    SafeAreaView, 
-    Animated,
     Platform
 
 } from 'react-native';
@@ -30,7 +24,7 @@ export default function Home(){
       const btnSubmit  = useRef(null);
       
         function acervo(){
-            navigation.navigate("LandingAcervo");
+            navigation.navigate("Cadastro");
         }
 
 
@@ -42,8 +36,8 @@ export default function Home(){
           )
           .then(async function(response){
                          
-              await AsyncStorage.setItem("@ProjetoCasa:usuario:token", response.data.token);
-              const token = await AsyncStorage.getItem("@ProjetoCasa:usuario:token");
+              await AsyncStorage.setItem("@Vazamento:usuario:token", response.data.token);
+              const token = await AsyncStorage.getItem("@Vazamento:usuario:token");
   
               if(token === null)
                   throw "Não foi possível setar um token";
@@ -63,8 +57,8 @@ export default function Home(){
                   
               
               }catch(err){
-                  
-                  Alert.alert("Atenção", "Ocorreu um erro ao tentar realizar o login");
+                navigation.navigate('LandingVoluntario');
+                //   Alert.alert("Atenção", "Ocorreu um erro ao tentar realizar o login");
                  
               }
           
@@ -75,7 +69,7 @@ export default function Home(){
     
       useEffect(async ()=>{
 
-        const token = await AsyncStorage.getItem("@ProjetoCasa:usuario:token");
+        const token = await AsyncStorage.getItem("@Vazamento:usuario:token");
         
         if(token)
             navigation.navigate('LandingVoluntario');
@@ -94,7 +88,7 @@ export default function Home(){
 
         >
             
-            <Image style={styles.img} source={require('../../assets/pp.png')} />
+            <Image style={styles.img} source={require('../../assets/logo2.png')} />
                        
             <TextInput
                 style={styles.input}
@@ -144,7 +138,7 @@ export default function Home(){
                 ref={btnSubmit}
                 
                 >
-                <Text style={styles.submitText}>Voltar Acervo</Text>
+                <Text style={styles.submitText}>Cadastro</Text>
             </TouchableOpacity>
             
 
@@ -159,7 +153,7 @@ const styles = StyleSheet.create({
       flex:1,
       alignItems:"center",
       justifyContent:"center",
-      backgroundColor:'#FFF'
+      backgroundColor:'#3392bf'
   },
   text:{
      
@@ -187,10 +181,10 @@ const styles = StyleSheet.create({
       paddingBottom:150
   },
   input:{
-      backgroundColor:'#2b2b2a',
+      backgroundColor:'#FFFFFF',
       width:'90%',
       marginBottom:15,
-      color:'#F2F1ED',
+      color:'#000000',
       fontSize: 20,
       borderRadius: 10,
       padding:15,
@@ -208,10 +202,11 @@ const styles = StyleSheet.create({
   buttonSubmit1:{
     backgroundColor:'green',
     width: '90%',
-    height:40,
+    height:50,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius:7
+    borderRadius:7,
+    top:10
 },
   submitText:{
       color:'#FFF',
@@ -238,7 +233,7 @@ const styles = StyleSheet.create({
 
     position: 'relative',
     width: 200,
-    height: 350,
+    height: 200,
     left: 0,
     top: 28,
     

@@ -8,7 +8,7 @@ import axios from 'axios';
 */
 const api = axios.create({
 
-  baseURL: 'https://aptechs.com.br/apiprojetocasa',
+  baseURL: 'http://localhost:8000',
 
 });
 
@@ -23,7 +23,7 @@ api.interceptors.request.use(async function( config ){
 
   if( config.url !== '/src/user/login' ){
 
-    let token = await AsyncStorage.getItem('@ProjetoCasa:usuario:token');
+    let token = await AsyncStorage.getItem('@Vazamento:usuario:token');
 
     if(token !== null)
       config.headers.Authorization = `Bearer ${token}`;
