@@ -8,11 +8,11 @@
 
         public function __construct(){
 
-            $host   = "localhost";
+            $host   = "127.0.0.1";
             $port   = "3306";
-            $user   = "u236436105_root";
-            $pass   = "!Arthhack2023";
-            $dbname = "u236436105_biblioteca";
+            $user   = "root";
+            $pass   = "";
+            $dbname = "economia";
 
             $dsn = "mysql:host={$host};dbname={$dbname};port={$port}";
 
