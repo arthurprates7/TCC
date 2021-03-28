@@ -62,132 +62,108 @@
 
         public function dashboard(){
 
-            $data_incio = mktime(0, 0, 0, date('m') , 1 , date('Y'));
-            $data_fim = mktime(23, 59, 59, date('m'), date("t"), date('Y'));
-            $data_resultado_inicio=date('Y-m-d ',$data_incio);
-            $data_resultado_fim=date('Y-m-d ',$data_fim);
-            $data_fim_nova = date('Y-m-d',strtotime("+1 days",strtotime($data_resultado_fim)));
-
             $dados = [];
 
+
             $sql = $this->pdo->prepare(
-                "SELECT COUNT(id) as 'totallivros' from livros");
+                "SELECT name FROM `infos` 
+                        INNER JOIN users ON
+                        users.id = infos.user
+                        where users.id =1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
-                throw new \Exception("Nenhum livro cadastrado");
+                throw new \Exception("Erro na API");
 
-            $totallivros = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['totallivros'];
-
-
-
-            $sql = $this->pdo->prepare(
-                "SELECT COUNT(id) as 'qtdemprestimos' from emprestimos");
-            $sql->execute();
-
-            if($sql->rowCount() < 1)
-                throw new \Exception("Nenhum livro cadastrado");
-
-            $qtdemprestimos = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['qtdemprestimos'];
-
-
-            $dataatual = date("Y-m-d");
-            $sql = $this->pdo->prepare(
-                "select COUNT(id) as 'livrosatrasados' from emprestimos where data_devolucao < '$dataatual' && estado = 1");
-            $sql->execute();
-
-            if($sql->rowCount() < 1)
-                throw new \Exception("Nenhum livro cadastrado");
-
-            $qtdlivrosatrasados = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['livrosatrasados'];
-
+            $usuario = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['name'];
 
 
             $sql = $this->pdo->prepare(
-                "SELECT COUNT(id) as 'visitantes' from visitantes");
+                "SELECT caixa FROM `infos` 
+                        INNER JOIN users ON
+                        users.id = infos.user
+                        where users.id =1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
-                throw new \Exception("Nenhum visitante cadastrado");
+                throw new \Exception("Erro na API");
 
-            $visitantes = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['visitantes'];
+            $caixa = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['caixa'];
+
+            $sql = $this->pdo->prepare(
+                "SELECT rua FROM `infos` 
+                        INNER JOIN users ON
+                        users.id = infos.user
+                        where users.id =1");
+            $sql->execute();
+
+            if($sql->rowCount() < 1)
+                throw new \Exception("Erro na API");
+
+            $rua = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['rua'];
 
 
             $sql = $this->pdo->prepare(
-                "SELECT COUNT(id) as 'voluntarios' from users");
+                "SELECT vazamento FROM `infos` 
+                        INNER JOIN users ON
+                        users.id = infos.user
+                        where users.id =1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
-                throw new \Exception("Nenhum voluntario cadastrado");
+                throw new \Exception("Erro na API");
 
-            $voluntarios = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['voluntarios'];
-
-            $dataatual = date("Y-m-d");
-            $sql = $this->pdo->prepare(
-                "SELECT COUNT(id) as 'emdia' from emprestimos where data_devolucao > '$dataatual' && estado =1");
-            $sql->execute();
-
-            if($sql->rowCount() < 1)
-                throw new \Exception("Nenhum livro em dia");
-
-            $livrosemdia = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['emdia'];
-
-
+            $vazamento = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['vazamento'];
 
 
             $sql = $this->pdo->prepare(
-                "SELECT valor_caixa as 'valor_caixa' from caixa");
+                "SELECT consumo FROM `infos` 
+                        INNER JOIN users ON
+                        users.id = infos.user
+                        where users.id =1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
-                throw new \Exception("Valor em caixa com erro");
+                throw new \Exception("Erro na API");
 
-            $valor_caixa = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['valor_caixa'];
+            $consumo = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['consumo'];
+
+
+
 
 
             $dados = [
 
                 [
-                    "id"=> "total_livros",
-                    "nome" => "Total de Livros Cadastrados",
-                    "valor" =>$totallivros
+                  "usuario"=>"usuario",
+                  "nome"=>$usuario,
+                  'valor'=>$usuario
                 ],
 
                 [
-                    "id"=> "livros_emprestados",
-                    "nome" => "Total de Livros Emprestados pelo CASA",
-                    "valor" => $qtdemprestimos
+                    "id"=> "caixa",
+                    "nome" => "Porcentagem Água da Caixa",
+                    "valor" =>$caixa
                 ],
 
                 [
-                    "id"=> "livros_atrasados",
-                    "nome" => "Livros Emprestados em Atraso",
-                    "valor" => $qtdlivrosatrasados
+                    "id"=> "rua",
+                    "nome" => "Está faltando água da rua?",
+                    "valor" => $rua
                 ],
 
                 [
-                    "id"=> "livros_emdia",
-                    "nome" => "Livros Emprestados em Dia",
-                    "valor" => $livrosemdia
+                    "id"=> "vazamento",
+                    "nome" => "Está ocorrendo vazamento?",
+                    "valor" => $vazamento
                 ],
 
                 [
-                    "id"=> "valor_caixa",
-                    "nome" => "Valor em Caixa",
-                    "valor" => "R$ ".number_format($valor_caixa,2,",",".")
+                    "id"=> "consumo",
+                    "nome" => "Consumo agora",
+                    "valor" => $consumo
                 ],
 
-                [
-                    "id"=> "visitantes_cadastrados",
-                    "nome" => "Quantidade de Visitantes Cadastrados",
-                    "valor" =>$visitantes
-                ],
-
-                [
-                    "id"=> "voluntarios",
-                    "nome" => "Voluntários do CASA Cadastrados",
-                    "valor" => $voluntarios
-                ],
 
 
 
