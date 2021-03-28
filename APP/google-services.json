@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "518253388501",
+    "firebase_url": "https://projeto-casa-2a01b.firebaseio.com",
+    "project_id": "projeto-casa-2a01b",
+    "storage_bucket": "projeto-casa-2a01b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518253388501:android:cfc4fcec62bdd69e40f85c",
+        "android_client_info": {
+          "package_name": "com.aptechs.projetocasa"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "518253388501-jqsd7vupccndoon6e16oqvc04e5b4tp4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNg3g24-ji5TBsTBIPgELSu_W4Qq4GHLo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "518253388501-jqsd7vupccndoon6e16oqvc04e5b4tp4.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,214 @@
+import React , {useState, useEffect, Component} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {View, KeyboardAvoidingView,Image,TextInput, TouchableOpacity, Keyboard,Alert ,AsyncStorage ,Text,StyleSheet, SafeAreaView, Animated} from 'react-native';
+import api from './api';
+
+export default function App(){
+
+   
+    const[email,setEmail] = useState('');
+    const[password,setPassword] = useState('');
+    
+
+    async function submit(){
+        
+        await api.post('/src/user/login',
+        
+            {email,password} 
+        )
+        .then(async function(response){
+                       
+            await AsyncStorage.setItem("@SuperMarket:usuario:token", response.data.token);
+            const token = await AsyncStorage.getItem("@SuperMarket:usuario:token");
+
+            if(token === null)
+                throw "Não foi possível setar um token";
+
+                //navigation.navigate(store);
+        
+        })
+        .catch(function(error){
+           
+            try{
+            
+                let message = typeof 
+                error.response.data.message !== "undefined" ? 
+                error.response.data.message : 
+                "Houve uma falha ao tentar fazer login";
+                Alert.alert("Erro", message);
+            
+            }catch(err){
+                
+                Alert.alert("Atenção", "Ocorreu um erro ao tentar realizar o login");
+               
+            }
+        
+        });
+    
+    }
+       
+    const [offset] = useState(new Animated.ValueXY({x:0,y:95}));
+    const [opacity] = useState(new Animated.Value(0));
+
+    useEffect(()=>{
+
+            Animated.parallel([
+                Animated.spring(offset.y,{
+                    toValue:0,
+                    speed:4,
+                    bounciness:20
+                }),
+                Animated.timing(opacity,{
+                    toValue:1,
+                    duration:200,
+                })
+            ]).start();
+
+    },[]);
+    
+  
+
+    return (
+
+            
+            <KeyboardAvoidingView style={styles.background}>
+
+            <View style={styles.containerLogo}>
+
+                <Image source={require('./src/assets/logo.png')} />
+                
+                <Text style={styles.text}>$uperMarket Delivery</Text>
+            </View>
+
+
+            <Animated.View 
+                    style={[
+                        styles.container,
+                    {
+                        opacity:opacity,
+                        transform:[
+                            {translateY: offset.y}
+                            
+                        ]
+
+                    }]}>
+
+                <TextInput
+                    style={styles.input}
+                    placeholder="Email"
+                    value={email}
+                    autoCorrect={false}
+                    onChangeText={(value)=>{setEmail(value)}}
+                />
+
+                <TextInput
+                    secureTextEntry={true}
+                    style={styles.input}
+                    placeholder="Senha"
+                    value={password}
+                    onChangeText={(value)=>{setPassword(value)}}
+                    autoCorrect={false}
+                />
+
+
+                <TouchableOpacity onPress={submit} style={styles.buttonSubmit}>
+                    <Text style={styles.submitText}>Acessar</Text>
+                </TouchableOpacity>
+                
+
+                <TouchableOpacity  style={styles.buttonrecovery}>
+                    <Text style={styles.recoveryText}>Esqueceu a Senha?</Text>
+                </TouchableOpacity>
+
+            </Animated.View>
+
+            <TouchableOpacity onPress={()=>LoginScreen} style={styles.buttonregister}>
+                    <Text style={styles.registerText}>Crie uma conta</Text>
+                </TouchableOpacity>
+
+            </KeyboardAvoidingView>
+
+
+
+    );
+}
+
+const styles = StyleSheet.create({
+        background:{
+            flex:1,
+            alignItems:"center",
+            justifyContent:"center",
+            backgroundColor:'#48983B'
+        },
+        text:{
+           
+            position: "absolute",
+            color:'#FFF',
+            width: 400,
+            height: 400,
+            left: 45,
+            top: 300,
+            fontStyle: 'normal',
+            fontWeight: 'normal',
+            fontSize: 24,
+            lineHeight: 31
+
+        },
+        containerLogo:{
+            flex:1,
+            justifyContent:'center'
+        },
+        container:{
+            flex:1,
+            alignItems:'center',
+            justifyContent:'center',
+            width:'90%',
+            paddingBottom:150
+        },
+        input:{
+            backgroundColor:'#FFF',
+            width:'90%',
+            marginBottom:15,
+            color:'#000000',
+            fontSize: 20,
+            borderRadius: 10,
+            padding:15
+
+        },
+        buttonSubmit:{
+            backgroundColor:'#000000',
+            width: '90%',
+            height:50,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius:7
+        },
+        submitText:{
+            color:'#FFF',
+            fontSize:18
+        },
+        buttonrecovery:{
+            marginTop:10,
+        },
+        recoveryText:{
+            color:'#FFF'
+        },
+        buttonregister:{
+            backgroundColor:'#514B99',
+            width: '150%',
+            height: 45,
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRadius:7
+        },
+        registerText:{
+            color:'#FFF'
+        }
+
+
+
+
+        
+
+});

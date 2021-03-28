@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Projeto Casa",
+    "slug": "ProjetoCasa",
+    "platforms": [     
+      "android"
+    ],
+    "version": "1.4.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FFF"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6713191597542209~6955590357"
+      }
+    },
+    "android":{
+      
+      "googleServicesFile": "./google-services.json",
+      "package": "com.aptechs.projetocasa",
+      "versionCode": 7,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "config": {
+        "googleMobileAdsAppId": "ca-app-pub-6713191597542209~6955590357" 
+      }
+    },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "#000"
+    }
+  }
+}
