@@ -4,7 +4,7 @@
     
     $app = new Slim\App(
 
-        [
+        [ 
 
             'settings' =>[
 
