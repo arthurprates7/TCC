@@ -11,7 +11,7 @@
 
 
         $app->get("/dashboard", User::class.":dashboard");
-        $app->post("/controlemensal", User::class.":pesquisaproduto");
+        $app->post("/controlemensal", User::class.":controle");
 
 
 

@@ -6,6 +6,7 @@
     $app->group("/user", function() use ($app){
 
         $app->post("/login", User::class . ":login");
+        $app->post("/cadastro", User::class . ":cadastro");
 
     });
 

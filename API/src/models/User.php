@@ -8,6 +8,58 @@
         private $nome;
         private $email;
         private $password;
+        private $mes;
+        private $expo;
+
+
+        /**
+         * @return mixed
+         */
+        public function getNome()
+        {
+            return $this->nome;
+        }
+
+        /**
+         * @param mixed $nome
+         */
+        public function setNome($nome): void
+        {
+            $this->nome = $nome;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getExpo()
+        {
+            return $this->expo;
+        }
+
+        /**
+         * @param mixed $expo
+         */
+        public function setExpo($expo): void
+        {
+            $this->expo = $expo;
+        }
+
+
+        /**
+         * @return mixed
+         */
+        public function getMes()
+        {
+            return $this->mes;
+        }
+
+        /**
+         * @param mixed $mes
+         */
+        public function setMes($mes): void
+        {
+            $this->mes = $mes;
+        }
 
 
         public function __construct(){
@@ -116,20 +168,6 @@
             $vazamento = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['vazamento'];
 
 
-            $sql = $this->pdo->prepare(
-                "SELECT consumo FROM `infos` 
-                        INNER JOIN users ON
-                        users.id = infos.user
-                        where users.id =1");
-            $sql->execute();
-
-            if($sql->rowCount() < 1)
-                throw new \Exception("Erro na API");
-
-            $consumo = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['consumo'];
-
-
-
 
 
             $dados = [
@@ -158,11 +196,6 @@
                     "valor" => $vazamento
                 ],
 
-                [
-                    "id"=> "consumo",
-                    "nome" => "Consumo agora",
-                    "valor" => $consumo
-                ],
 
 
 
@@ -176,16 +209,69 @@
 
 
         public function pesquisaproduto(){
-            $nome_livro = $this->getNomeLivro();
+
+
+            $dados = [];
+            $mes = $this->getMes();
 
             $sql = $this->pdo->prepare(
-                "select * from livros where nome LIKE '%$nome_livro%'"
+                "SELECT SUM(valor) FROM `controle` WHERE MONTH(created_at) = :mes and user = 1"
             );
 
-            $sql->bindParam(":codigo_livro", $codigo_livro);
+            $sql->bindParam(":mes", $mes);
+            $sql->execute();
+            $soma = $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+
+             $sql = $this->pdo->prepare(
+                 "SELECT * FROM `controle` WHERE MONTH(created_at) = :mes and user = 1"
+             );
+
+            $sql->bindParam(":mes", $mes);
+            $sql->execute();
+            $valores = $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+            $dados = [
+
+                [
+                    "soma"=>$soma
+                ],
+                [
+                    "valores"=>$valores
+                ]
+
+            ];
+
+            return $dados;
+        }
+
+
+        public function cadastro(){
+
+
+            $email = $this->getEmail();
+            $password = $this->getPassword();
+            $nome = $this->getNome();
+            $senha = password_hash($password,PASSWORD_DEFAULT);
+            $expo = $this->getExpo();
+
+
+
+            $sql = $this->pdo->prepare(
+                "INSERT INTO users (name,email,password,expo_token) VALUES (:name,:email,:password,:expo)"
+            );
+
+            $sql->bindParam(":expo", $expo);
+            $sql->bindParam(":name", $nome);
+            $sql->bindParam(":email", $email);
+            $sql->bindParam(":password", $senha);
+
             $sql->execute();
 
-            return $sql->fetchAll(\PDO::FETCH_ASSOC);
+            if($sql->rowCount() !== 1)
+                throw new \Exception("Usuário ou senha inválidos");
+
+
         }
 
 
