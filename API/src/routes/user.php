@@ -7,6 +7,7 @@
 
         $app->post("/login", User::class . ":login");
         $app->post("/cadastro", User::class . ":cadastro");
+        $app->post("/refresh", User::class . ":refresh");
 
     });
 

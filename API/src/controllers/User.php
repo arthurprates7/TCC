@@ -26,6 +26,7 @@
 
                 if(empty($request->getParsedBody()['email']))
                     throw new \Exception("Email vazio");
+
                 if(empty($request->getParsedBody()['password'])){
                     throw new \Exception("Senha vazia");
                 }
@@ -34,6 +35,11 @@
                 $user = new UserModel();
                 $user->setEmail($request->getParsedBody()['email']);
                 $user->setPassword($request->getParsedBody()['password']);
+
+                if(!is_null($request->getParsedBody()['expo'])){
+                    $user->setExpo($request->getParsedBody()['expo']);
+
+                }
 
                 $auth = new Auth();
 
@@ -58,8 +64,12 @@
 
             try{
 
+                $token = ($request->getHeader('HTTP_AUTHORIZATION'));
+                $explode = explode(" ",$token[0]);
+                $token_final = ($explode[1]);
+
                 $productModel = new UserModel();
-                $this->content['dashboard'] = $productModel->dashboard();
+                $this->content['dashboard'] = $productModel->dashboard($token_final);
                 $this->httpStatusCode = 200;
 
             }catch(\Exception $e){
@@ -86,7 +96,11 @@
                     $infos = new UserModel();
                 $infos->setMes($request->getParsedBody()['mes']);
 
-                $this->content['message'] = $infos->pesquisaproduto();;
+                $token = ($request->getHeader('HTTP_AUTHORIZATION'));
+                $explode = explode(" ",$token[0]);
+                $token_final = ($explode[1]);
+
+                $this->content['message'] = $infos->controle($token_final);
                 $this->httpStatusCode = 200;
 
             }catch (\Exception $e){
@@ -104,9 +118,6 @@
                 if(!isset($request->getParsedBody()['name']))
                     throw new \Exception("Informe um nome");
 
-                if(!isset($request->getParsedBody()['expo_token']))
-                    throw new \Exception("Informe um token");
-
                 if(!isset($request->getParsedBody()['password']))
                     throw new \Exception("Informe a senha");
 
@@ -114,9 +125,6 @@
                     throw new \Exception("Email vazio");
                 if(empty($request->getParsedBody()['name']))
                     throw new \Exception("Nome vazio");
-
-                if(empty($request->getParsedBody()['expo_token']))
-                    throw new \Exception("Token vazio");
 
                 if(empty($request->getParsedBody()['password'])){
                     throw new \Exception("Senha vazia");
@@ -127,10 +135,7 @@
 
                 $user->setEmail($request->getParsedBody()['email']);
                 $user->setPassword($request->getParsedBody()['password']);
-                $user->setExpo($request->getParsedBody()['expo_token']);
                 $user->setNome($request->getParsedBody()['name']);
-
-
 
                 $login = $user->cadastro();
                 $this->httpStatusCode = 200;
@@ -145,6 +150,57 @@
 
 
 
+        public function refresh(Request $request, Response $response, array $args):Response{
+
+            try{
+
+                if(empty($request->getParsedBody()['instalacao']))
+                    throw new \Exception("Instalacao vazio");
+                if(empty($request->getParsedBody()['caixa']))
+                    throw new \Exception("Caixa vazio");
+                if(!isset($request->getParsedBody()['instalacao']))
+                    throw new \Exception("Informe a Instalação");
+                if(!isset($request->getParsedBody()['rua']))
+                    throw new \Exception("Informe a Rua");
+                if(!isset($request->getParsedBody()['vazamento']))
+                    throw new \Exception("Informe o Vazamento");
+                if(!isset($request->getParsedBody()['caixa'])){
+                    throw new \Exception("Informe a Caixa");
 
 
-    }
+                }
+                else
+                $infos = new UserModel();
+                $infos->setInstalacao($request->getParsedBody()['instalacao']);
+                $infos->setRua($request->getParsedBody()['rua']);
+                $infos->setVazamento($request->getParsedBody()['vazamento']);
+                $infos->setCaixa($request->getParsedBody()['caixa']);
+
+                $this->content['message'] = $infos->refresh();;
+                $this->httpStatusCode = 200;
+
+            }catch (\Exception $e){
+                $this->content['message'] = $e->getMessage();
+            }
+            return $response->withJSON($this->content)->withStatus($this->httpStatusCode);
+        }
+
+
+        public function notificacao(Request $request, Response $response, array $args):Response{
+
+
+            $infos = new UserModel();
+
+            $notificacao= $infos->send();
+            $this->httpStatusCode = 200;
+
+            return $response->withJSON($notificacao)->withStatus($this->httpStatusCode);
+
+
+
+        }
+
+
+
+
+        }

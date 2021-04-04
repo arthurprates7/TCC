@@ -2,6 +2,7 @@
 
     namespace src\models;
     use src\config\Connection;
+    use src\middleware\Auth;
 
     class User extends Connection{
 
@@ -10,6 +11,75 @@
         private $password;
         private $mes;
         private $expo;
+        private $instalacao;
+        private $rua;
+        private $vazamento;
+        private $caixa;
+
+
+        /**
+         * @return mixed
+         */
+        public function getCaixa()
+        {
+            return $this->caixa;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getInstalacao()
+        {
+            return $this->instalacao;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getRua()
+        {
+            return $this->rua;
+        }
+
+        /**
+         * @return mixed
+         */
+        public function getVazamento()
+        {
+            return $this->vazamento;
+        }
+
+        /**
+         * @param mixed $caixa
+         */
+        public function setCaixa($caixa): void
+        {
+            $this->caixa = $caixa;
+        }
+
+        /**
+         * @param mixed $instalacao
+         */
+        public function setInstalacao($instalacao): void
+        {
+            $this->instalacao = $instalacao;
+        }
+
+        /**
+         * @param mixed $rua
+         */
+        public function setRua($rua): void
+        {
+            $this->rua = $rua;
+        }
+
+        /**
+         * @param mixed $vazamento
+         */
+        public function setVazamento($vazamento): void
+        {
+            $this->vazamento = $vazamento;
+        }
 
 
         /**
@@ -93,6 +163,7 @@
                 "SELECT id, name, password FROM users WHERE email = :email LIMIT 1"
             );
 
+
             $sql->bindParam(":email", $email);
             $sql->execute();
 
@@ -100,6 +171,18 @@
                 throw new \Exception("Usuário ou senha inválidos");
 
             $result = $sql->fetchAll(\PDO::FETCH_ASSOC)[0];
+
+            if(!is_null($this->getExpo())){
+                $expo = $this->getExpo();
+
+                $id = $result['id'];
+
+                $sql = $this->pdo->prepare(
+                    "UPDATE `users` SET `expo_token` = '$expo' WHERE `users`.`id` = '$id';"
+                );
+
+                $sql->execute();
+            }
 
 
             if(!password_verify($password, $result['password']))
@@ -112,16 +195,23 @@
 
 
 
-        public function dashboard(){
+
+        public function dashboard($token_final){
 
             $dados = [];
+
+            $auth = new Auth();
+
+            $token = $auth->decodeToken($token_final);
+
+            $usuario_id = ($token->id);
 
 
             $sql = $this->pdo->prepare(
                 "SELECT name FROM `infos` 
                         INNER JOIN users ON
                         users.id = infos.user
-                        where users.id =1");
+                        where users.id =$usuario_id");
             $sql->execute();
 
             if($sql->rowCount() < 1)
@@ -130,11 +220,24 @@
             $usuario = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['name'];
 
 
+
+            $sql = $this->pdo->prepare(
+                "SELECT instalacao FROM `users` 
+                        where users.id =$usuario_id");
+            $sql->execute();
+
+            if($sql->rowCount() < 1)
+                throw new \Exception("Erro na API");
+
+            $instalacao = $sql->fetchAll(\PDO::FETCH_ASSOC)[0]['instalacao'];
+
+
+
             $sql = $this->pdo->prepare(
                 "SELECT caixa FROM `infos` 
                         INNER JOIN users ON
                         users.id = infos.user
-                        where users.id =1");
+                        where users.id =$usuario_id ORDER BY infos.id DESC LIMIT 1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
@@ -146,7 +249,7 @@
                 "SELECT rua FROM `infos` 
                         INNER JOIN users ON
                         users.id = infos.user
-                        where users.id =1");
+                        where users.id =$usuario_id ORDER BY infos.id DESC LIMIT 1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
@@ -159,7 +262,7 @@
                 "SELECT vazamento FROM `infos` 
                         INNER JOIN users ON
                         users.id = infos.user
-                        where users.id =1");
+                        where users.id =$usuario_id ORDER BY infos.id DESC LIMIT 1");
             $sql->execute();
 
             if($sql->rowCount() < 1)
@@ -173,9 +276,15 @@
             $dados = [
 
                 [
-                  "usuario"=>"usuario",
+                  "id"=>"usuario",
                   "nome"=>$usuario,
-                  'valor'=>$usuario
+
+                ],
+
+                [
+                    "id"=>"instalacao",
+                    "nome"=>$instalacao,
+
                 ],
 
                 [
@@ -208,41 +317,47 @@
 
 
 
-        public function pesquisaproduto(){
+        public function refresh(){
 
 
             $dados = [];
-            $mes = $this->getMes();
+            $vazamento = $this->getVazamento();
+            $caixa = $this->getCaixa();
+            $rua = $this->getRua();
+            $instalacao = $this->getInstalacao();
 
             $sql = $this->pdo->prepare(
-                "SELECT SUM(valor) FROM `controle` WHERE MONTH(created_at) = :mes and user = 1"
+                "SELECT * FROM `users` WHERE instalacao = :instalacao"
             );
 
-            $sql->bindParam(":mes", $mes);
+            $sql->bindParam(":instalacao", $instalacao);
             $sql->execute();
-            $soma = $sql->fetchAll(\PDO::FETCH_ASSOC);
+            $inteiro = $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+            $id_usuario = $inteiro[0]['id'];
+            $expo = $inteiro[0]['expo_token'];
 
 
              $sql = $this->pdo->prepare(
-                 "SELECT * FROM `controle` WHERE MONTH(created_at) = :mes and user = 1"
+                 "INSERT INTO `infos` (`id`, `user`, `rua`, `caixa`, `vazamento`, `created_at`) VALUES (NULL, :usuario, :rua, :caixa, :vazamento, current_timestamp());"
              );
 
-            $sql->bindParam(":mes", $mes);
+            $sql->bindParam(":usuario", $id_usuario);
+            $sql->bindParam(":rua", $rua);
+            $sql->bindParam(":caixa", $caixa);
+            $sql->bindParam(":vazamento", $vazamento);
+
             $sql->execute();
-            $valores = $sql->fetchAll(\PDO::FETCH_ASSOC);
 
-            $dados = [
 
-                [
-                    "soma"=>$soma
-                ],
-                [
-                    "valores"=>$valores
-                ]
 
-            ];
+            if($rua == 1) {
 
-            return $dados;
+                $this->send($caixa,$expo);
+
+
+            }
+
         }
 
 
@@ -253,15 +368,15 @@
             $password = $this->getPassword();
             $nome = $this->getNome();
             $senha = password_hash($password,PASSWORD_DEFAULT);
-            $expo = $this->getExpo();
 
+            $instalacao = md5($senha);
 
 
             $sql = $this->pdo->prepare(
-                "INSERT INTO users (name,email,password,expo_token) VALUES (:name,:email,:password,:expo)"
+                "INSERT INTO users (name,email,password,instalacao) VALUES (:name,:email,:password,:instalacao)"
             );
 
-            $sql->bindParam(":expo", $expo);
+            $sql->bindParam(":instalacao", $instalacao);
             $sql->bindParam(":name", $nome);
             $sql->bindParam(":email", $email);
             $sql->bindParam(":password", $senha);
@@ -273,6 +388,96 @@
 
 
         }
+
+
+        public function controle($token_final){
+
+            $mes = $this->getMes();
+            $auth = new Auth();
+
+            $token = $auth->decodeToken($token_final);
+
+            $usuario_id = ($token->id);
+            $sql = $this->pdo->prepare(
+                "SELECT * FROM `infos` WHERE user = $usuario_id and MONTH(created_at) = :mes"
+            );
+
+            $sql->bindParam(":mes", $mes);
+            $sql->execute();
+            return $sql->fetchAll(\PDO::FETCH_ASSOC);
+
+
+        }
+
+
+        public function send($caixa,$expo){
+
+
+            //para bater a notificacao
+            // faz a alteração em update status - se houver vazamento chama essa função
+
+            $caixa = number_format($caixa,2,'.','.');
+
+
+            try{
+
+
+                $postFields = json_encode([
+
+                    "to" => $expo,
+                    "title" => "Foi identificado falta de água da rua!",
+                    "body" => "Foi identificado falta de água da rua! Economize água! A porcentagem de água da caixa é: $caixa %"
+
+                ]);
+
+
+                $curl = curl_init();
+
+                curl_setopt_array($curl, array(
+
+                        CURLOPT_URL => 'https://exp.host/--/api/v2/push/send',
+                        CURLOPT_RETURNTRANSFER => true,
+                        CURLOPT_ENCODING => "",
+                        CURLOPT_MAXREDIRS => 10,
+                        CURLOPT_TIMEOUT => 30,
+                        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+                        CURLOPT_CUSTOMREQUEST => "POST",
+                        CURLOPT_POSTFIELDS => $postFields,
+                        CURLOPT_HTTPHEADER => array(
+
+                            "content-type: application/json"
+
+                        ),
+                    )
+                );
+
+                $response = curl_exec($curl);
+                $err = curl_error($curl);
+
+                curl_close($curl);
+
+                if ($err) {
+
+                    $this->response['message'] = "cURL Error #:" . $err;
+
+                } else {
+
+                    $this->response['message'] = $response;
+
+                }
+
+            } catch(\Exception $e){
+
+                $this->response['message'] = $e->getMessage();
+
+            }
+
+            return $this->response;
+
+        }
+
+
+
 
 
 

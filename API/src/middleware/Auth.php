@@ -16,6 +16,11 @@
 
         }
 
+        public function decodeToken($token){
+            return JWT::decode($token, getenv("JWT_SECRET_KEY"),array('HS256'));
+        }
+
+
         public function validateToken() : JwtAuthentication {
 
             return new JwtAuthentication([

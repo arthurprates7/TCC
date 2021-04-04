@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Tempo de geração: 28/03/2021 às 17:43
+-- Tempo de geração: 04/04/2021 às 16:02
 -- Versão do servidor: 10.4.17-MariaDB
 -- Versão do PHP: 7.4.15
 
@@ -26,28 +26,6 @@ USE `economia`;
 -- --------------------------------------------------------
 
 --
--- Estrutura para tabela `controle`
---
-
-CREATE TABLE `controle` (
-  `id` int(11) NOT NULL,
-  `user` bigint(20) UNSIGNED NOT NULL,
-  `valor` int(11) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Despejando dados para a tabela `controle`
---
-
-INSERT INTO `controle` (`id`, `user`, `valor`, `created_at`) VALUES
-(1, 1, 9, '2021-03-28 14:37:56'),
-(2, 10, 10, '2021-03-28 14:38:02'),
-(3, 1, 100, '2021-03-28 14:38:09');
-
--- --------------------------------------------------------
-
---
 -- Estrutura para tabela `infos`
 --
 
@@ -60,6 +38,33 @@ CREATE TABLE `infos` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Despejando dados para a tabela `infos`
+--
+
+INSERT INTO `infos` (`id`, `user`, `rua`, `caixa`, `vazamento`, `created_at`) VALUES
+(2, 1, 0, '92.20', 0, '2021-04-03 21:30:37'),
+(3, 1, 1, '50.00', 0, '2021-04-03 21:47:15'),
+(4, 1, 0, '60.00', 0, '2021-04-03 21:48:51'),
+(5, 1, 1, '60.00', 0, '2021-04-03 21:53:13'),
+(6, 1, 1, '60.00', 0, '2021-04-04 13:31:19'),
+(7, 1, 1, '60.00', 0, '2021-04-04 13:31:24'),
+(8, 1, 1, '60.00', 0, '2021-04-04 13:31:34'),
+(9, 1, 1, '60.00', 0, '2021-04-04 13:31:41'),
+(10, 1, 1, '60.00', 0, '2021-04-04 13:31:55'),
+(11, 1, 1, '60.00', 0, '2021-04-04 13:32:18'),
+(12, 1, 1, '60.00', 0, '2021-04-04 13:33:40'),
+(13, 1, 1, '60.00', 0, '2021-04-04 13:34:00'),
+(14, 1, 1, '60.00', 0, '2021-04-04 13:37:50'),
+(15, 1, 1, '60.00', 0, '2021-04-04 13:38:10'),
+(16, 1, 1, '60.00', 0, '2021-04-04 13:38:33'),
+(17, 1, 1, '60.00', 0, '2021-04-04 13:38:48'),
+(18, 1, 1, '60.00', 0, '2021-04-04 13:39:08'),
+(19, 1, 1, '60.00', 0, '2021-04-04 13:39:22'),
+(20, 1, 0, '60.00', 0, '2021-04-04 13:39:38'),
+(21, 1, 1, '60.00', 0, '2021-04-04 14:01:35'),
+(22, 1, 1, '60.00', 0, '2021-04-04 14:01:50');
+
 -- --------------------------------------------------------
 
 --
@@ -70,10 +75,9 @@ CREATE TABLE `users` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `instalacao` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `expo_token` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `expo_token` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -82,19 +86,13 @@ CREATE TABLE `users` (
 -- Despejando dados para a tabela `users`
 --
 
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `expo_token`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'Administrador', 'administrador@aptechs.com.br', NULL, '$2y$10$EPvSkiyFPKmOop6WsBfoc.2n8/bGCrUrc/d66owwI1ARtnhxOiKwe', '', NULL, '2020-06-14 00:43:18', '2020-06-14 00:43:18'),
-(2, 'Arthur', 'arthur.prates7@gmail.com', NULL, '$2y$10$b3tobMgVpsaBtJt3tRlWEOCmmjtx0hUIuobLPuYyHcAYaO8cxrKAm', 'dasdsadasdasd', NULL, NULL, NULL);
+INSERT INTO `users` (`id`, `name`, `email`, `instalacao`, `password`, `expo_token`, `created_at`, `updated_at`) VALUES
+(1, 'Administrador', 'administrador@aptechs.com.br', '1', '$2y$10$EPvSkiyFPKmOop6WsBfoc.2n8/bGCrUrc/d66owwI1ARtnhxOiKwe', 'dasjhdlasdlkjdaslkd', '2020-06-14 00:43:18', '2020-06-14 00:43:18'),
+(2, 'Arthur', 'arthur.prates7@gmail.com', '2', '$2y$10$b3tobMgVpsaBtJt3tRlWEOCmmjtx0hUIuobLPuYyHcAYaO8cxrKAm', 'dasjhdlasdlkjdaslkd', NULL, NULL);
 
 --
 -- Índices para tabelas despejadas
 --
-
---
--- Índices de tabela `controle`
---
-ALTER TABLE `controle`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices de tabela `infos`
@@ -114,22 +112,16 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT de tabela `controle`
---
-ALTER TABLE `controle`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
-
---
 -- AUTO_INCREMENT de tabela `infos`
 --
 ALTER TABLE `infos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT de tabela `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Restrições para tabelas despejadas
